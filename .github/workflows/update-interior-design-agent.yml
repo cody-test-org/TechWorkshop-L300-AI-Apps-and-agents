@@ -35,16 +35,21 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       
+      - name: Set up environment file
+        working-directory: ./src
+        run: |
+          echo "${{ secrets.ENV }}" > .env
+      
       - name: Run Interior Design Agent Initializer
         working-directory: ./src
         run: |
-          # Create .env file and source it to export variables
-          echo "${{ secrets.ENV }}" > .env
-          # Export variables from .env, skipping comments and empty lines
-          set -a
-          source <(grep -v '^#' .env | grep -v '^$' | sed 's/\r$//')
-          set +a
           python app/agents/interiorDesignAgent_initializer.py
+      
+      - name: Clean up
+        if: always()
+        working-directory: ./src
+        run: |
+          rm -f .env
       
       - name: Agent update completed
         run: |
