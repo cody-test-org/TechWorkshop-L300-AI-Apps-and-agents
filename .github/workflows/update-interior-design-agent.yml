@@ -35,23 +35,12 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       
-      - name: Set up environment variables
-        run: |
-          echo "${{ secrets.ENV }}" > src/.env
-      
       - name: Run Interior Design Agent Initializer
         working-directory: ./src
         run: |
+          # Export all environment variables from ENV secret
+          export $(echo "${{ secrets.ENV }}" | xargs)
           python app/agents/interiorDesignAgent_initializer.py
-        env:
-          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-      
-      - name: Clean up
-        if: always()
-        run: |
-          rm -f src/.env
       
       - name: Agent update completed
         run: |
