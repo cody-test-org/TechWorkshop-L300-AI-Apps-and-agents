@@ -38,8 +38,12 @@ jobs:
       - name: Run Inventory Agent Initializer
         working-directory: ./src
         run: |
-          # Export all environment variables from ENV secret
-          export $(echo "${{ secrets.ENV }}" | xargs)
+          # Create .env file and source it to export variables
+          echo "${{ secrets.ENV }}" > .env
+          # Export variables from .env, skipping comments and empty lines
+          set -a
+          source <(grep -v '^#' .env | grep -v '^$' | sed 's/\r$//')
+          set +a
           python app/agents/inventoryAgent_initializer.py
       
       - name: Agent update completed
