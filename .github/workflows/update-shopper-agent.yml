@@ -38,6 +38,7 @@ jobs:
         working-directory: ./src
         run: |
           echo "${{ secrets.ENV }}" > .env
+          cat .env
       
       - name: Run Shopper Agent Initializer
         working-directory: ./src

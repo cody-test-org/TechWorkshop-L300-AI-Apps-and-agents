@@ -9,16 +9,22 @@ import json
 from tools.inventoryCheck import inventory_check
 from dotenv import load_dotenv
 
-# Load .env file from the src directory
-env_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), '.env')
-load_dotenv(dotenv_path=env_path)
+# Load .env file - try multiple locations
+script_dir = os.path.dirname(os.path.abspath(__file__))
+src_dir = os.path.dirname(os.path.dirname(script_dir))
+
+# Try loading from src directory first
+env_loaded = load_dotenv(dotenv_path=os.path.join(src_dir, '.env'))
+if not env_loaded:
+    # Try current working directory
+    env_loaded = load_dotenv()
 
 IA_PROMPT_TARGET = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'prompts', 'InventoryAgentPrompt.txt')
 with open(IA_PROMPT_TARGET, 'r', encoding='utf-8') as file:
     IA_PROMPT = file.read()
 
 project_endpoint = os.environ["AZURE_AI_AGENT_ENDPOINT"]
-agent_id = os.environ["zava_inventory_agent"]
+agent_id = os.environ["inventory_agent"]
 
 project_client = AIProjectClient(
     endpoint=project_endpoint,

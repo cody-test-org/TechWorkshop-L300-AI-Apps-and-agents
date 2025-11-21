@@ -8,9 +8,15 @@ from typing import Callable, Set, Any
 import json
 from dotenv import load_dotenv
 
-# Load .env file from the src directory
-env_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), '.env')
-load_dotenv(dotenv_path=env_path)
+# Load .env file - try multiple locations
+script_dir = os.path.dirname(os.path.abspath(__file__))
+src_dir = os.path.dirname(os.path.dirname(script_dir))
+
+# Try loading from src directory first
+env_loaded = load_dotenv(dotenv_path=os.path.join(src_dir, '.env'))
+if not env_loaded:
+    # Try current working directory
+    env_loaded = load_dotenv()
 
 CORA_PROMPT_TARGET = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'prompts', 'ShopperAgentPrompt.txt')
 with open(CORA_PROMPT_TARGET, 'r', encoding='utf-8') as file:

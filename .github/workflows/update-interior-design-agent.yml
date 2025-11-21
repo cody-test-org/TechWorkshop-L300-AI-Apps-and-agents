@@ -39,6 +39,7 @@ jobs:
         working-directory: ./src
         run: |
           echo "${{ secrets.ENV }}" > .env
+          cat .env
       
       - name: Run Interior Design Agent Initializer
         working-directory: ./src

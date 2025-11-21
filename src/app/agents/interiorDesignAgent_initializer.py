@@ -8,9 +8,20 @@ from typing import Callable, Set, Any
 from tools.imageCreationTool import create_image
 from dotenv import load_dotenv
 
-# Load .env file from the src directory
-env_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), '.env')
-load_dotenv(dotenv_path=env_path)
+# Load .env file - try multiple locations
+script_dir = os.path.dirname(os.path.abspath(__file__))
+src_dir = os.path.dirname(os.path.dirname(script_dir))
+
+# Try loading from src directory first
+env_loaded = load_dotenv(dotenv_path=os.path.join(src_dir, '.env'))
+if not env_loaded:
+    # Try current working directory
+    env_loaded = load_dotenv()
+
+print(f"Environment loaded: {env_loaded}")
+print(f"Current working directory: {os.getcwd()}")
+print(f"Script directory: {script_dir}")
+print(f"Src directory: {src_dir}")
 
 # Load the prompt instructions for the interior design agent from a file
 # path = r'prompts\InteriorDesignAgentPrompt.txt'
@@ -19,7 +30,7 @@ with open(ID_PROMPT_TARGET, 'r', encoding='utf-8') as file:
     ID_PROMPT = file.read()
 
 project_endpoint = os.environ["AZURE_AI_AGENT_ENDPOINT"]
-agent_id = os.environ["zava_interior_design_agent"]
+agent_id = os.environ["interior_designer"]
 
 project_client = AIProjectClient(
     endpoint=project_endpoint,
