@@ -6,6 +6,8 @@ from azure.identity import DefaultAzureCredential
 from azure.ai.agents.models import FunctionTool, ToolSet
 from typing import Callable, Set, Any
 from tools.imageCreationTool import create_image
+from dotenv import load_dotenv
+load_dotenv()
 
 # Load the prompt instructions for the interior design agent from a file
 # path = r'prompts\InteriorDesignAgentPrompt.txt'
@@ -45,16 +47,16 @@ with project_client:
         agent = project_client.agents.update_agent(
             agent_id=agent.id,
             model=os.environ["AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME"],  # Model deployment name
-            name="Cora",  # Name of the agent
-            instructions=CORA_PROMPT,  # Updated instructions for the agent
+            name="Interior Design Agent",  # Name of the agent
+            instructions=ID_PROMPT,  # Updated instructions for the agent
             # toolset=toolset
         )
         print(f"Updated agent, ID: {agent.id}")
     else:
         agent = project_client.agents.create_agent(
             model=os.environ["AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME"],  # Model deployment name
-            name="Cora",  # Name of the agent
-            instructions=CORA_PROMPT,  # Instructions for the agent
+            name="Interior Design Agent",  # Name of the agent
+            instructions=ID_PROMPT,  # Instructions for the agent
             # toolset=toolset
         )
         print(f"Created agent, ID: {agent.id}")
